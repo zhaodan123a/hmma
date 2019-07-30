@@ -1,6 +1,7 @@
 <template>
     <div id="app">
-<div class="ceshi"></div>
+<!-- <div class="ceshi"></div> -->
+      <router-view></router-view>
       </div>
 </template>
 
@@ -10,9 +11,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.ceshi{
-  width: 750px;
-  height: 200px;
-  background-color: pink;
-}
+// 测试rem适配
+// .ceshi{
+//   width: 750px;
+//   height: 200px;
+//   background-color: pink;
+// }
 </style>
