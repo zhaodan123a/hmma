@@ -1,7 +1,10 @@
 <template>
     <div id="app">
 <!-- <div class="ceshi"></div> -->
+<!-- 路由缓存，只调用一次钩子函数 -->
+      <keep-alive>
       <router-view></router-view>
+      </keep-alive>
       </div>
 </template>
 
