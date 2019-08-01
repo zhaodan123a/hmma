@@ -16,3 +16,21 @@ export const getarticles = ({
     }
   })
 }
+
+// 不感兴趣的请求（对文章不喜欢）,传文章id
+export const unLikeArticles = (articleId) => {
+  return request({
+    method: 'post',
+    url: '/app/v1_0/article/dislikes',
+    data: { target: articleId }
+  })
+}
+
+// 举报文章
+export const report = ({ articleId, type, remark = '' }) => {
+  return request({
+    method: 'post',
+    url: '/app/v1_0/article/reports',
+    data: { target: articleId, type, remark }
+  })
+}

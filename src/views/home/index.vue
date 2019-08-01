@@ -14,22 +14,30 @@
             finished-text="没有更多了"
             @load="onLoad"
           >
-            <van-cell v-for="item in activetab.articles" :key="item.aut_id" :title="item.title">
+            <van-cell
+              v-for="item in activetab.articles"
+              :key="item.art_id.toString()"
+              :title="item.title"
+            >
               <template slot="label">
                 <!-- 图片 -->
                 <!-- 当图片数量是0时会隐藏（false） -->
-                <van-grid v-show='item.cover.type !==0' :border="false" :column-num="3">
+                <van-grid v-show="item.cover.type !==0" :border="false" :column-num="3">
                   <van-grid-item v-for="src in item.cover.images" :key="src">
                     <!-- 图片懒加载，配合文档lazyload使用 -->
-                    <van-image :src="src" lazy-load/>
+                    <van-image :src="src" lazy-load />
                   </van-grid-item>
                 </van-grid>
                 <!-- 内容 -->
-                作者：<span>{{item.aut_name}}</span>&nbsp;
-                评论：<span>{{item.comm_count}}</span>&nbsp;
-                时间：<span>{{item.pubdate | reltime }}</span>&nbsp;
+                作者：
+                <span>{{item.aut_name}}</span>&nbsp;
+                评论：
+                <span>{{item.comm_count}}</span>&nbsp;
+                时间：
+                <span>{{item.pubdate | reltime }}</span>&nbsp;
                 <!-- x图标，点击时会弹出框，内容是拉黑或者追评等 -->
-                <van-icon name="close" @click="isshowdialog()"/>
+                <!-- 传入点击的文章 -->
+                <van-icon name="close" @click="isshowdialog(item)" />
               </template>
             </van-cell>
           </van-list>
@@ -38,7 +46,15 @@
     </van-tabs>
     <!-- 弹出框标签 -->
     <!-- 将父组件数据传到子组件 v-model绑定的是布尔值-->
-    <more-action v-model='isshowaction'></more-action>
+    <!-- 需要传入选中的文章unlikeArticles -->
+    <!-- dislike-success是接收子组件传入，不感兴趣后将此文章删除 -->
+    <!-- report-success是接收子组件传入，举报后将此系信息输出 -->
+    <more-action
+      v-model="isshowaction"
+      :dislikeArticles="dislikeArticles"
+      @dislike-success="handledislike"
+      @report-success="handlereport"
+    ></more-action>
   </div>
 </template>
 
@@ -68,7 +84,9 @@ export default {
       // 频道
       channels: [],
       // 弹出框开与关
-      isshowaction: false
+      isshowaction: false,
+      // 传入子组件的选中的文章
+      dislikeArticles: null
     }
   },
   created () {
@@ -122,7 +140,7 @@ export default {
         // 重新请求
         data = await this.getarticlesList()
         // 此时已经有数据
-        console.log(data)
+        // console.log(data)
       }
       // 控制加载的动画
       if (!data.pre_timestamp && !data.results.length) {
@@ -168,13 +186,30 @@ export default {
           (item.upFinished = false) // 加载完毕的动画
           item.timestamp = Date.now() // 时间戳
         })
-        console.log(res)
+        // console.log(res)
         this.channels = res.channels
       }
     },
     // 出现弹出窗事件
-    isshowdialog () {
+    isshowdialog (selectArticles) {
+      // 将选中的文章赋值
+      this.dislikeArticles = selectArticles
+      // console.log(this.dislikeArticles)
       this.isshowaction = true
+    },
+    // 不感兴趣子传父，对话框关闭并删除指定文章
+    handledislike () {
+      // 因为接口不完善，所以此处制作一个虚拟删除
+      // 使用findIndex筛选出符合条件的索引
+      const dex = this.activetab.articles.findIndex(item => {
+        return item === this.dislikeArticles
+      })
+      // 将选中的文章剔除
+      this.activetab.articles.splice(dex, 1)
+    },
+    // 举报处理事件
+    handlereport () {
+      console.log('举报成功！')
     }
   }
 }
