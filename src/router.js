@@ -20,6 +20,12 @@ export default new Router({
         name: 'home',
         path: '/',
         component: () => import('@/views/home')
+      },
+      {
+        name: 'search',
+        path: '/search',
+        // 搜索界面
+        component: () => import('@/views/search')
       }]
     }
   ]
