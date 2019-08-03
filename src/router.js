@@ -26,6 +26,12 @@ export default new Router({
         path: '/search',
         // 搜索界面
         component: () => import('@/views/search')
+      },
+      {
+        // 搜索结果页面
+        name: 'search-results',
+        path: '/search-results/:content',
+        component: () => import('@/views/search/search-results.vue')
       }]
     }
   ]
