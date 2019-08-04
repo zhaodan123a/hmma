@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <van-cell>
     <!-- 搜索界面 -->
     <!-- 搜索框 -->
     <van-search
@@ -10,14 +10,33 @@
       @cancel="onCancel"
     />
     <!-- 关键字 -->
-    <van-cell-group>
-      <van-cell :value="item" v-for="(item,index) in keysearch" :key="index" @click="onSearch(item)">
+    <van-cell-group v-if="searchvalue.length&&keysearch.length">
+      <van-cell
+        :value="item"
+        v-for="(item,index) in keysearch"
+        :key="index"
+        @click="onSearch(item)"
+      >
         <!-- 关键字高亮，使用插槽 -->
         <!-- 使用v-html绑定事件，传入关键字内容和搜索框内容 -->
         <div slot="title" v-html="highkey(item,searchvalue)"></div>
       </van-cell>
     </van-cell-group>
-  </div>
+    <!-- 历史记录 -->
+    <van-cell-group v-else>
+      <van-cell title="历史记录">
+        <!-- 删除图标 -->
+        <van-icon name="delete" v-show="!isDeleteData" @click="delhistory"/>
+        <div v-show="isDeleteData">
+          <span style="margin-right:10px">全部删除</span>
+          <span @click="isDeleteData=false">完成</span>
+        </div>
+      </van-cell>
+      <van-cell :title="item" v-for="(item,index) in historyvalue" :key="index">
+        <van-icon v-show="isDeleteData" slot="right-icon" name="close" style="line-height:inherit"></van-icon>
+      </van-cell>
+    </van-cell-group>
+  </van-cell>
 </template>
 
 <script>
@@ -32,7 +51,11 @@ export default {
       // 搜索框输入的数据
       searchvalue: '',
       // 关键字数组
-      keysearch: []
+      keysearch: [],
+      // 历史记录的图标
+      isDeleteData: false,
+      // 历史记录,默认值是从本地获取的记录或者空数组
+      historyvalue: JSON.parse(window.localStorage.getItem('search-history')) || []
     }
   },
   watch: {
@@ -84,13 +107,31 @@ export default {
     // 回车时搜索事件
     // 传入搜索框内容
     onSearch (keywords) {
+      // 因为历史记录不应该出现重复的内容，所以需要进行数组去重
+      // 这里利用Set构造函数去重
+      const setTemp = new Set(this.historyvalue)
+      // 向数组中追加数据
+      setTemp.add(keywords)
+      // 将集合转成数组形式
+      this.historyvalue = Array.from(setTemp)
+      // 保存到本地，反应到历史记录中
+      window.localStorage.setItem('search-history', JSON.stringify(this.historyvalue))
       // 跳转到搜索结果页面
       this.$router.push(`/search-results/${keywords}`)
       // 或者使用name和params
-    //   this.$router.push({ name: 'search-results', params: { keywords } })
+      //   this.$router.push({ name: 'search-results', params: { keywords } })
+      this.searchvalue = ''
     },
+    // 删除图标事件
+    delhistory () {
+      this.isDeleteData = true
+    },
+
     // 取消时事件
-    onCancel () {}
+    onCancel () {
+      // 回到首页
+      this.$router.push('/')
+    }
   }
 }
 </script>

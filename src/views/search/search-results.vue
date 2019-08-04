@@ -61,6 +61,7 @@ export default {
     },
     // 动画效果
     async onload () {
+      // 睡眠，防止动画太快体验不好
       await this.$sleep(800)
       // console.log('111')
       // 调用方法，需要使用await才能收到对象，否则是个promise对象
@@ -85,7 +86,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.van-nav-bar {
+  background-color: #0096fa;
+
+  .van-nav-bar__title,
+  .van-nav-bar__text,
+  .van-icon {
+    color: #fff;
+  }
+}
 .search-list{
   margin-top: 92px;
+  margin-bottom: 92px;
 }
 </style>

@@ -160,6 +160,9 @@ export default {
     async delchannels (a, b) {
       // console.log('删除成功！')
       this.channelList.splice(b, 1)
+      // 解决删除激活频道会自动激活下一个频道，但首页内容不显示的问题
+      // 将消息通知父组件
+      this.$emit('success-del')
       // 要分是否登录
       if (this.user) {
         // 已登录，发请求

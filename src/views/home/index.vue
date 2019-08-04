@@ -1,8 +1,10 @@
 <template>
   <div>
-    <van-nav-bar title="首页" fixed />
+    <!-- 点击首页跳转到搜索页面  .native表示原生事件 -->
+    <van-nav-bar title="首页" fixed @click.native="$router.push({name:'search'})"></van-nav-bar>
     <!-- 导航栏 -->
-    <van-tabs v-model="activetabIndex" class="channels-tab">
+    <!-- lazy-render关闭标签页延迟渲染 -->
+    <van-tabs :lazy-render="false" @change="handlechangechannel" v-model="activetabIndex" class="channels-tab">
       <!-- 插槽，存放右侧的按钮 -->
       <div slot="nav-right">
         <!-- 点击，出现弹出层 -->
@@ -70,9 +72,11 @@
     <!-- channelList是传入频道列表 -->
     <!-- hoverChannel传入激活频道的下标 -->
     <!-- update:active-index表示父组件接收子组件传过来的值，修改激活频道的id -->
+    <!-- success-del表示接收子组件传过来的通知 -->
     <channel-index
       v-model="isshowchannel"
       :channelList="channels"
+      @success-del="handledelete"
       :hoverChannel="activetabIndex"
       @update:active-index="activetabIndex=$event"
     ></channel-index>
@@ -134,6 +138,7 @@ export default {
       // 需要手动进行重置上拉的动画，激活频道列表数据（此时因为内部不会自动置为true，需手动置为true）
       this.activetab.uppullLoading = true
       this.getarticlesList()
+      // 或
       // 加载中动画在执行一次后就会变成false，如果要再次执行，需要手动调用
       // this.onLoad()
     }
@@ -285,6 +290,20 @@ export default {
     // 右上角图标点击事件
     mychannels () {
       this.isshowchannel = true
+    },
+    // 改变激活频道事件
+    handlechangechannel () {
+      this.onLoad()
+    },
+    // 删除频道优化
+    handledelete () {
+      // 判断列表是否有数据
+      if (!this.activetab.articles.length) {
+        console.log('111')
+        // 没有事数据，开启加载中动画，重新渲染
+        this.activetab.uppullLoading = true
+        this.onLoad()
+      }
     }
   }
 }
@@ -317,7 +336,7 @@ export default {
   position: fixed;
   right: 0;
   top: 110px;
-  font-size:50px;
+  font-size: 50px;
   background-color: #ffe;
 }
 </style>
