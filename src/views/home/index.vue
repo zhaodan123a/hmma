@@ -31,6 +31,7 @@
               v-for="item in activetab.articles"
               :key="item.art_id.toString()"
               :title="item.title"
+              @click="detailarticle(item.art_id)"
             >
               <template slot="label">
                 <!-- 图片 -->
@@ -304,6 +305,10 @@ export default {
         this.activetab.uppullLoading = true
         this.onLoad()
       }
+    },
+    // 跳转详情页(传入文章id)
+    detailarticle (id) {
+      this.$router.push({ name: 'articles', params: { articles_id: id } })
     }
   }
 }
