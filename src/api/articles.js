@@ -65,16 +65,39 @@ export const unfollow = (userId) => {
 // limit	否		获取的评论数据个数，不传表示采用后端服务设定的默认每页数据量
 
 export const getreply = ({
-  article_id,
-  offset
+  istype = true,
+  source,
+  offset = null, // 将会从开头读取
+  limit = 10
 }) => {
   return request({
     method: 'get',
     url: `/app/v1_0/comments`,
     params: {
-      type: 'a',
-      source: article_id,
-      offset
+      type: istype ? 'a' : 'c',
+      source,
+      offset,
+      limit
+    }
+  })
+}
+// 添加评论或评论回复
+
+// target	integer	必须		评论的目标id（评论文章即为文章id，对评论进行回复则为评论id）
+// content	string	必须		评论内容
+// art_id	integer	非必须		文章id，对评论内容发表回复时，需要传递此参数，表明所属文章id。对文章进行评论，不要传此参数。
+export const addcomm = ({
+  target,
+  articleId = null,
+  content
+}) => {
+  return request({
+    method: 'post',
+    url: `/app/v1_0/comments`,
+    data: {
+      target,
+      content,
+      art_id: articleId
     }
   })
 }

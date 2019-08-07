@@ -12,9 +12,14 @@
       <!-- 更多操作 -->
       <more-action></more-action>
       <!-- 评论列表 -->
-      <comment-list></comment-list>
-      <!-- 回复列表 -->
-      <reply-list v-model="isshowreply"></reply-list>
+      <!-- 传入评论id -->
+      <comment-list :source="articlesId"></comment-list>
+      <!-- 回复窗口 -->
+      <!-- 传输文章id -->
+      <reply-list :articleId="articlesId"></reply-list>
+      <!-- 发布文章组件 -->
+      <!-- 发送文章id -->
+      <add-commandrep class="addcomm" :target="articlesId"></add-commandrep>
     </div>
   </div>
 </template>
@@ -25,6 +30,7 @@ import autoInfo from './component/auto-info.vue'
 import CommentList from './component/comment-list.vue'
 import MoreAction from './component/more-action.vue'
 import ReplyList from './component/reply-list.vue'
+import AddCommandrep from './component/add-commandrep.vue'
 // 引入获取文章详情
 import { getarticlesdetail } from '@/api/articles.js'
 export default {
@@ -33,7 +39,8 @@ export default {
     autoInfo,
     CommentList,
     MoreAction,
-    ReplyList
+    ReplyList,
+    AddCommandrep
   },
   data () {
     return {
@@ -96,5 +103,10 @@ export default {
   .article-content {
     font-size: 20px;
   }
+}
+.addcomm {
+  position: fixed;
+  left: 0;
+  bottom: 0;
 }
 </style>
