@@ -7,7 +7,8 @@
    <!-- 底部导航 -->
    <van-tabbar v-model="active">
   <van-tabbar-item icon="home-o">首页</van-tabbar-item>
-  <van-tabbar-item icon="friends-o">我的</van-tabbar-item>
+  <!-- 判断是否登录，登录显示我的，否则显示未登录 -->
+  <van-tabbar-item icon="friends-o" to="/mine">{{$store.state.user?'我的':'未登录'}}</van-tabbar-item>
 </van-tabbar>
   </div>
 </template>

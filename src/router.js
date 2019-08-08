@@ -17,9 +17,16 @@ export default new Router({
       path: '/',
       component: () => import('@/views/tabbar-layout'),
       children: [{
+        // 首页
         name: 'home',
         path: '/',
         component: () => import('@/views/home')
+      },
+      {
+        // 我的
+        name: 'mine',
+        path: '/mine',
+        component: () => import('@/views/mine')
       },
       {
         name: 'search',
@@ -40,6 +47,18 @@ export default new Router({
       name: 'articles',
       path: '/articles/:articles_id',
       component: () => import('@/views/articles')
+    },
+    {
+      // 编辑页
+      name: 'user-profile',
+      path: '/user-profile',
+      component: () => import('@/views/mine/component/user-profile.vue')
+    },
+    {
+      // 聊天界面
+      name: 'feedback',
+      path: '/feedback',
+      component: () => import('@/views/chart')
     }
   ]
 })
